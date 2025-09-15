@@ -12,8 +12,13 @@ export default function Page() {
   const [showOffer, setShowOffer] = React.useState(true);
   
   // Use both environment variables directly for better reliability
-  const signInUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "https://adapted-yak-99.accounts.dev/sign-in";
-  const signUpUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "https://adapted-yak-99.accounts.dev/sign-up";
+  const signInUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/login";
+  const signUpUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up";
+
+  // Ensure users return to the same page after auth when coming from links/buttons
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "/";
+  const signInHref = `${signInUrl}?redirect_url=${encodeURIComponent(currentUrl)}`;
+  const signUpHref = `${signUpUrl}?redirect_url=${encodeURIComponent(currentUrl)}`;
 
   const handleGetStarted = React.useCallback(() => {
     router.push("/dashboard");
@@ -37,7 +42,7 @@ export default function Page() {
             </p>
             <div className="flex items-center gap-3">
               <Link
-                href={signUpUrl}
+                href={signUpHref}
                 className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
               >
                 Claim offer
@@ -59,13 +64,13 @@ export default function Page() {
         <div className="container mx-auto max-w-6xl px-4 py-3">
           <div className="flex items-center justify-end gap-3">
             <Link
-              href={signInUrl}
+              href={signInHref}
               className="rounded-md px-3 py-1.5 text-sm text-foreground hover:bg-accent"
             >
               Sign in
             </Link>
             <Link
-              href="/sign-up"
+              href={signUpHref}
               className="rounded-md bg-foreground px-3 py-1.5 text-sm font-medium text-background hover:opacity-90"
             >
               Sign up
