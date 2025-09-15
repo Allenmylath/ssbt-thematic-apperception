@@ -12,7 +12,7 @@ export const ClerkAppProvider = ({ children }: { children: React.ReactNode }) =>
         },
       }}
       signInUrl="/login"
-      signUpUrl="/register"
+      signUpUrl="/sign-up"
       afterSignInUrl="/dashboard"    // Add this
       afterSignUpUrl="/dashboard"
     >
