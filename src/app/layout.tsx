@@ -3,7 +3,7 @@ import "./globals.css";
 import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
-import { ClerkAppProvider } from "@/components/providers/clerk-provider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,44 +15,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
   return (
     <html lang="en">
       <body className="antialiased">
-        {hasClerk ? (
-          <ClerkAppProvider>
-            <ErrorReporter />
-            <Script
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
-              strategy="afterInteractive"
-              data-target-origin="*"
-              data-message-type="ROUTE_CHANGE"
-              data-include-search-params="true"
-              data-only-in-iframe="true"
-              data-debug="true"
-              data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
-            />
-            {children}
-            <VisualEditsMessenger />
-          </ClerkAppProvider>
-        ) : (
-          <>
-            <ErrorReporter />
-            <Script
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
-              strategy="afterInteractive"
-              data-target-origin="*"
-              data-message-type="ROUTE_CHANGE"
-              data-include-search-params="true"
-              data-only-in-iframe="true"
-              data-debug="true"
-              data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
-            />
-            {children}
-            <VisualEditsMessenger />
-          </>
-        )}
+        <ClerkProvider
+          signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL}
+          signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL}
+          signInFallbackRedirectUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL}
+          signUpFallbackRedirectUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL}
+          signInForceRedirectUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL}
+          signUpForceRedirectUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL}
+        >
+          <ErrorReporter />
+          <Script
+            src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
+            strategy="afterInteractive"
+            data-target-origin="*"
+            data-message-type="ROUTE_CHANGE"
+            data-include-search-params="true"
+            data-only-in-iframe="true"
+            data-debug="true"
+            data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
+          />
+          {children}
+          <VisualEditsMessenger />
+        </ClerkProvider>
       </body>
     </html>
   );
